@@ -1,5 +1,6 @@
 // backend/services/iotService.js
 const iothub = require("azure-iothub");
+const { Message } = require("azure-iot-common");
 require("dotenv").config();
 
 const connectionString = process.env.IOTHUB_CONNECTION_STRING;
@@ -11,7 +12,7 @@ const serviceClient = iothub.Client.fromConnectionString(connectionString);
 // Function to send message to IoT device
 async function sendToDevice(command) {
   return new Promise((resolve, reject) => {
-    const message = new iothub.Message(command);
+    const message = new Message(command);
     console.log(`[IoT] Sending message to device: ${command}`);
 
     serviceClient.open((err) => {
