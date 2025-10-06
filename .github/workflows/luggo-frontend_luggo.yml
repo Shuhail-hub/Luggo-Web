@@ -1,4 +1,4 @@
-# 🚀 Build and deploy React app to Azure Web App (Frontend)
+# 🚀 Build and Deploy React app to Azure Web App (Frontend)
 # Docs: https://github.com/Azure/webapps-deploy
 
 name: Build and deploy React app to Azure Web App - Luggo Frontend
@@ -26,16 +26,16 @@ jobs:
 
       - name: Install dependencies
         working-directory: frontend
-        run: npm install
+        run: npm ci
 
       - name: Build React app
         working-directory: frontend
         run: npm run build
 
-      - name: Upload artifact for deployment
+      - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: react-app
+          name: react-build
           path: frontend/build
 
   deploy:
@@ -49,13 +49,13 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: react-app
-          path: build
+          name: react-build
+          path: ./build
 
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'Luggo'   # 👈 must match your Azure Web App name exactly
+          app-name: 'Luggo'   # 👈 Must exactly match your Azure Web App name
           slot-name: 'Production'
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FRONTEND }}
-          package: build
+          package: ./build
