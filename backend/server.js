@@ -9,19 +9,19 @@ const swaggerJsdoc = require("swagger-jsdoc");
 
 const app = express();
 
-// Load environment variables
+// ✅ Load environment variables (works both locally and on Azure)
 const dockerEnvPath = "/app/.env";
 const localEnvPath = path.join(__dirname, ".env");
 dotenv.config({ path: fs.existsSync(dockerEnvPath) ? dockerEnvPath : localEnvPath });
 
-// Middleware
+// ✅ Middleware
 app.use(cors({
   origin: process.env.CLIENT_URL || "*",
-  methods: ["GET", "POST"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
 }));
 app.use(express.json());
 
-// Swagger setup
+// ✅ Swagger setup
 const swaggerSpec = swaggerJsdoc({
   definition: {
     openapi: "3.0.0",
@@ -39,9 +39,14 @@ const swaggerSpec = swaggerJsdoc({
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-// Routes
+// ✅ Routes
 app.use("/api/locker", require("./routes/lockerRoutes"));
 
-// Start server
+// ✅ Root route — important for Azure health checks
+app.get("/", (req, res) => {
+  res.send("✅ Luggo Backend API is running on Azure 🚀");
+});
+
+// ✅ Start server on Azure’s assigned port
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
