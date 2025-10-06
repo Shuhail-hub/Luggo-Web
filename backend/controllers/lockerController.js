@@ -10,6 +10,7 @@ exports.lockLocker = async (req, res) => {
   }
 };
 
+
 exports.unlockLocker = async (req, res) => {
   try {
     const result = await sendToDevice("UNLOCK");
