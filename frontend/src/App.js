@@ -1,6 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LockerControl from "./pages/LockerControl";
+import LockerControl from "./pages/LockerControl.jsx";
 
 function App() {
   return (
