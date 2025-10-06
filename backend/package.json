@@ -11,6 +11,9 @@
   "license": "ISC",
   "description": "Luggo backend API to send LOCK/UNLOCK commands to IoT Hub",
   "dependencies": {
+    "azure-iot-common": "^1.13.2",
+    "azure-iot-device": "^1.18.3",
+    "azure-iot-device-mqtt": "^1.16.3",
     "azure-iothub": "^1.16.6",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
