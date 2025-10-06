@@ -39,9 +39,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     needs: build
-    permissions:
-      contents: read
-      id-token: write
 
     steps:
       - name: Download build artifact
@@ -53,7 +50,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'Luggo'   # 👈 must match your Azure Web App name exactly
+          app-name: 'Luggo' # 👈 must match Azure Web App name exactly
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_FRONTEND }}
           package: frontend/build
