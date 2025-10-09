@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./LockerControl.css";
 
-// ✅ Use environment variable or fallback to deployed backend
+// ✅ Backend base URL (Azure backend URL)
 const API_URL =
   process.env.REACT_APP_API_URL ||
   "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azurewebsites.net";
@@ -13,17 +13,26 @@ function LockerControl() {
   const [status2, setStatus2] = useState("LOCKED");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Send command to backend (LOCK1, UNLOCK1, LOCK2, UNLOCK2)
+  // ✅ Sends LOCK1, UNLOCK1, LOCK2, UNLOCK2 commands to backend
   const sendCommand = async (command) => {
     try {
       setLoading(true);
-      const response = await axios.post(`${API_URL}/api/locker/send`, { command });
+
+      // ✅ Map frontend commands to backend URLs
+      let endpoint = "";
+      if (command === "LOCK1") endpoint = "/api/locker1/lock";
+      else if (command === "UNLOCK1") endpoint = "/api/locker1/unlock";
+      else if (command === "LOCK2") endpoint = "/api/locker2/lock";
+      else if (command === "UNLOCK2") endpoint = "/api/locker2/unlock";
+
+      const response = await axios.post(`${API_URL}${endpoint}`);
+
       const message =
         response.data?.result?.message ||
         response.data?.message ||
         `Command ${command} sent successfully!`;
 
-      // Update local status
+      // ✅ Update locker status on UI
       if (command === "LOCK1") setStatus1("LOCKED");
       else if (command === "UNLOCK1") setStatus1("UNLOCKED");
       else if (command === "LOCK2") setStatus2("LOCKED");
@@ -32,7 +41,7 @@ function LockerControl() {
       alert(message);
     } catch (err) {
       console.error("❌ Error sending command:", err);
-      alert(err.response?.data?.message || "Failed to send command!");
+      alert(err.response?.data?.message || "Failed to send command to locker!");
     } finally {
       setLoading(false);
     }
