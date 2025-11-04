@@ -2,32 +2,19 @@
 const express = require("express");
 const router = express.Router();
 const {
-  lockLocker1,
   unlockLocker1,
-  lockLocker2,
   unlockLocker2,
+  unlockLocker3,
 } = require("../controllers/lockerController");
 
 /**
  * @swagger
  * tags:
  *   name: Locker
- *   description: Locker control endpoints (for multiple lockers)
+ *   description: Locker control endpoints (auto-lock enabled)
  */
 
-// ===== Locker 1 Routes =====
-/**
- * @swagger
- * /api/locker1/lock:
- *   post:
- *     summary: Send LOCK1 command to ESP32 (Locker 1)
- *     tags: [Locker]
- *     responses:
- *       200:
- *         description: Locker 1 locked successfully
- */
-router.post("/locker1/lock", lockLocker1);
-
+// ===== Locker 1 =====
 /**
  * @swagger
  * /api/locker1/unlock:
@@ -36,23 +23,11 @@ router.post("/locker1/lock", lockLocker1);
  *     tags: [Locker]
  *     responses:
  *       200:
- *         description: Locker 1 unlocked successfully
+ *         description: Locker 1 unlocked successfully (auto-lock after 10s)
  */
 router.post("/locker1/unlock", unlockLocker1);
 
-// ===== Locker 2 Routes =====
-/**
- * @swagger
- * /api/locker2/lock:
- *   post:
- *     summary: Send LOCK2 command to ESP32 (Locker 2)
- *     tags: [Locker]
- *     responses:
- *       200:
- *         description: Locker 2 locked successfully
- */
-router.post("/locker2/lock", lockLocker2);
-
+// ===== Locker 2 =====
 /**
  * @swagger
  * /api/locker2/unlock:
@@ -61,8 +36,21 @@ router.post("/locker2/lock", lockLocker2);
  *     tags: [Locker]
  *     responses:
  *       200:
- *         description: Locker 2 unlocked successfully
+ *         description: Locker 2 unlocked successfully (auto-lock after 10s)
  */
 router.post("/locker2/unlock", unlockLocker2);
+
+// ===== Locker 3 =====
+/**
+ * @swagger
+ * /api/locker3/unlock:
+ *   post:
+ *     summary: Send UNLOCK3 command to ESP32 (Locker 3)
+ *     tags: [Locker]
+ *     responses:
+ *       200:
+ *         description: Locker 3 unlocked successfully (auto-lock after 10s)
+ */
+router.post("/locker3/unlock", unlockLocker3);
 
 module.exports = router;
