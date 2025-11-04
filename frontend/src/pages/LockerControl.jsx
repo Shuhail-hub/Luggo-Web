@@ -11,19 +11,19 @@ const API_URL =
 function LockerControl() {
   const [status1, setStatus1] = useState("LOCKED");
   const [status2, setStatus2] = useState("LOCKED");
+  const [status3, setStatus3] = useState("LOCKED");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Sends LOCK1, UNLOCK1, LOCK2, UNLOCK2 commands to backend
+  // ✅ Sends UNLOCK1, UNLOCK2, UNLOCK3 commands to backend
   const sendCommand = async (command) => {
     try {
       setLoading(true);
 
-      // ✅ Map frontend commands to backend URLs
+      // ✅ Map commands to backend endpoints
       let endpoint = "";
-      if (command === "LOCK1") endpoint = "/api/locker1/lock";
-      else if (command === "UNLOCK1") endpoint = "/api/locker1/unlock";
-      else if (command === "LOCK2") endpoint = "/api/locker2/lock";
+      if (command === "UNLOCK1") endpoint = "/api/locker1/unlock";
       else if (command === "UNLOCK2") endpoint = "/api/locker2/unlock";
+      else if (command === "UNLOCK3") endpoint = "/api/locker3/unlock";
 
       const response = await axios.post(`${API_URL}${endpoint}`);
 
@@ -32,11 +32,17 @@ function LockerControl() {
         response.data?.message ||
         `Command ${command} sent successfully!`;
 
-      // ✅ Update locker status on UI
-      if (command === "LOCK1") setStatus1("LOCKED");
-      else if (command === "UNLOCK1") setStatus1("UNLOCKED");
-      else if (command === "LOCK2") setStatus2("LOCKED");
-      else if (command === "UNLOCK2") setStatus2("UNLOCKED");
+      // ✅ Update locker status (unlocked for 10s, then auto-lock)
+      if (command === "UNLOCK1") {
+        setStatus1("UNLOCKED");
+        setTimeout(() => setStatus1("LOCKED"), 10000);
+      } else if (command === "UNLOCK2") {
+        setStatus2("UNLOCKED");
+        setTimeout(() => setStatus2("LOCKED"), 10000);
+      } else if (command === "UNLOCK3") {
+        setStatus3("UNLOCKED");
+        setTimeout(() => setStatus3("LOCKED"), 10000);
+      }
 
       alert(message);
     } catch (err) {
@@ -59,13 +65,6 @@ function LockerControl() {
         </p>
         <div className="button-group">
           <button
-            className="lock-btn"
-            disabled={loading}
-            onClick={() => sendCommand("LOCK1")}
-          >
-            🔒 Lock
-          </button>
-          <button
             className="unlock-btn"
             disabled={loading}
             onClick={() => sendCommand("UNLOCK1")}
@@ -83,16 +82,26 @@ function LockerControl() {
         </p>
         <div className="button-group">
           <button
-            className="lock-btn"
-            disabled={loading}
-            onClick={() => sendCommand("LOCK2")}
-          >
-            🔒 Lock
-          </button>
-          <button
             className="unlock-btn"
             disabled={loading}
             onClick={() => sendCommand("UNLOCK2")}
+          >
+            🔓 Unlock
+          </button>
+        </div>
+      </div>
+
+      {/* Locker 3 */}
+      <div className="locker-box">
+        <h3>Locker 3</h3>
+        <p className="status">
+          Status: <strong>{status3}</strong>
+        </p>
+        <div className="button-group">
+          <button
+            className="unlock-btn"
+            disabled={loading}
+            onClick={() => sendCommand("UNLOCK3")}
           >
             🔓 Unlock
           </button>
