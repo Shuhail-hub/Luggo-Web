@@ -42,3 +42,17 @@ exports.unlockLocker3 = async (req, res) => {
       .json({ status: "error", locker: 3, message: error.message });
   }
 };
+
+// ========== RESET (Motor Down) ==========
+exports.resetDoor = async (req, res) => {
+  try {
+    const result = await sendToDevice("RESET"); // <--- sends RESET to ESP32
+    res
+      .status(200)
+      .json({ status: "success", action: "RESET", result });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: "error", message: error.message });
+  }
+};
