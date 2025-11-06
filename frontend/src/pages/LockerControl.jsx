@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./LockerControl.css";
 
-// ✅ Backend base URL (Azure backend URL)
 const API_URL =
   process.env.REACT_APP_API_URL ||
   "https://luggo-backend-cpavgbcdhjexexh7.centralindia-01.azurewebsites.net";
@@ -14,16 +13,16 @@ function LockerControl() {
   const [status3, setStatus3] = useState("LOCKED");
   const [loading, setLoading] = useState(false);
 
-  // ✅ Sends UNLOCK1, UNLOCK2, UNLOCK3 commands to backend
   const sendCommand = async (command) => {
     try {
       setLoading(true);
 
-      // ✅ Map commands to backend endpoints
+      // ✅ Map commands to backend
       let endpoint = "";
       if (command === "UNLOCK1") endpoint = "/api/locker1/unlock";
       else if (command === "UNLOCK2") endpoint = "/api/locker2/unlock";
       else if (command === "UNLOCK3") endpoint = "/api/locker3/unlock";
+      else if (command === "RESET") endpoint = "/api/locker/reset"; // ✅ NEW
 
       const response = await axios.post(`${API_URL}${endpoint}`);
 
@@ -32,7 +31,7 @@ function LockerControl() {
         response.data?.message ||
         `Command ${command} sent successfully!`;
 
-      // ✅ Update locker status (unlocked for 10s, then auto-lock)
+      // ✅ Update UI state (auto-lock after timeout)
       if (command === "UNLOCK1") {
         setStatus1("UNLOCKED");
         setTimeout(() => setStatus1("LOCKED"), 10000);
@@ -47,7 +46,7 @@ function LockerControl() {
       alert(message);
     } catch (err) {
       console.error("❌ Error sending command:", err);
-      alert(err.response?.data?.message || "Failed to send command to locker!");
+      alert(err.response?.data?.message || "Failed to send command!");
     } finally {
       setLoading(false);
     }
@@ -91,9 +90,9 @@ function LockerControl() {
         </div>
       </div>
 
-      {/* Locker 3 */}
+      {/* Locker 3 (Full door + motor) */}
       <div className="locker-box">
-        <h3>Locker 3</h3>
+        <h3>Locker 3 (Full Open)</h3>
         <p className="status">
           Status: <strong>{status3}</strong>
         </p>
@@ -103,7 +102,16 @@ function LockerControl() {
             disabled={loading}
             onClick={() => sendCommand("UNLOCK3")}
           >
-            🔓 Unlock
+            🔓 Unlock (Both + Motor UP)
+          </button>
+
+          {/* ✅ NEW RESET BUTTON */}
+          <button
+            className="lock-btn"
+            disabled={loading}
+            onClick={() => sendCommand("RESET")}
+          >
+            🔁 Reset (Motor Down)
           </button>
         </div>
       </div>
